@@ -4,7 +4,7 @@ const {PlayerState} = require('./Player')
 const dimension = {
     fieldWidth: 2000,
     fieldHeight: 1000,
-    hitThreshold: 3   //for test
+    hitThreshold: 3   //for tes
   }
 const windInfo = {
     maxWindMagnitude: 30,
