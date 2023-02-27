@@ -2,7 +2,6 @@
   "name": "artillery",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8000",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -43,5 +42,19 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenxuan-xiang/artillery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chenxuan-xiang/artillery/issues"
+  },
+  "homepage": "https://github.com/chenxuan-xiang/artillery#readme",
+  "description": ""
 }
