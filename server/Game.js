@@ -10,7 +10,12 @@ const windInfo = {
     maxWindMagnitude: 30,
     minWindMagnitude: 5 
 }
-
+const generateRandomWind = () =>{
+  return{
+    Direction: Math.round(Math.random()) === 0 ? -1 : 1,
+    Magnitude: Math.floor(Math.random() * (windInfo.maxWindMagnitude - windInfo.minWindMagnitude + 1)) + windInfo.minWindMagnitude
+  }
+}
 
 class Game {
     constructor(id) {
@@ -60,7 +65,6 @@ class Game {
     addPlayer(player) {
       this.players.push(player);
       if (this.players.length === 2 && this.players.every((player)=>{return player.state === PlayerState.ONLINE})){
-        console.log("can start?")
         this.startGame();
       }
     }
@@ -68,7 +72,6 @@ class Game {
     rejoinPlayer(player, playerNumber){     
         this.players[playerNumber] = player;
         if (this.players.length === 2 && this.players.every((player)=>{return player.state === PlayerState.ONLINE})){
-            console.log("test!!!!!")
             this.resumeGame();
         }
     }
@@ -110,11 +113,23 @@ class Game {
                 this.state.projectiles.x < 0 || 
                 this.state.projectiles.y > this.state.enviroment.y ||
                 this.state.projectiles.y < 0)  
-            {
+            {   
+                if(this.state.projectiles.y > this.state.enviroment.y && this.state.turn === 0){
+                    const dis = Math.abs(this.state.projectiles.x - this.state.player2.x) 
+                    this.players[0].socket.emit("disToGoal", dis)
+                } 
+                if(this.state.projectiles.y > this.state.enviroment.y && this.state.turn === 1){
+                    const dis = Math.abs(this.state.projectiles.x - this.state.player1.x) 
+                    this.players[1].socket.emit("disToGoal", dis)
+                } 
+
                 clearInterval(this.projectileMovingInterval);
                 this.state.projectiles.x = 0;   //move out of the game
                 this.state.projectiles.y = 0;
                 this.switchPlayer();
+                const {Direction, Magnitude} = generateRandomWind();
+                this.state.enviroment.windDirection = Direction;
+                this.state.enviroment.windMagnitude = Magnitude;
                 socket.nsp.to(this.id).emit('switchPlayer', this.state)
             }
             
@@ -125,7 +140,6 @@ class Game {
                     player.socket.emit('endofGame',this.state.turn === index);      //send win or lose
                   });
             }
-            // console.log(this.state.projectiles)
             socket.nsp.to(this.id).emit('updateGameStated', this.state.projectiles)
         }, 1000 / frameRate);
         return this.projectileMovingInterval;
@@ -139,7 +153,6 @@ class Game {
         this.state.projectiles.y = initialPoint.y;
         this.state.projectiles.v_x = this.state.turn === 0? speed*Math.cos(angle*Math.PI/180) : -speed*Math.cos(angle*Math.PI/180);
         this.state.projectiles.v_y = -speed*Math.sin(angle*Math.PI/180);
-        console.log(this.state)
         return this.generalHandleFire(socket);
     }
 

@@ -5,8 +5,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 
-// const gameId = localStorage.getItem('gameId');
-
 const dimension = {
   backgroundWidth:1000,
   backgroundHeight:500,
@@ -14,11 +12,9 @@ const dimension = {
   cannonHeight:10,
   ratio:2      // reality distance/pixel distance
 }
-
 function GamePage() {
     const [gameId, setGameId] = useState(localStorage.getItem('gameId'));
     const [socket, setSocket] = useState(null);
-    const [connected, setConnected] = useState(false);
     const [player, setPlayer] = useState(parseInt(localStorage.getItem('playerNumber')));
     const [isStarted, setIsStarted] = useState(false);
     const [gameState, setGameState] = useState(undefined);
@@ -83,12 +79,10 @@ function GamePage() {
     useEffect(() => {
       if(socket){
         socket.on('connect', () => {
-          setConnected(true);
           socket.emit('joinGame',{gameId : gameId, playerNumber : player})
         });
     
         socket.on('disconnect', () => {
-          setConnected(false);
           setGameId(null);
         });
   
@@ -141,6 +135,10 @@ function GamePage() {
         socket.on('angleChange', ({angle})=>{
           setopponentAngle(angle);
         })
+
+        socket.on('disToGoal', (dis)=>{
+          alert(`your projectile is ${dis}m from the oppenent, try harder!`);
+        })
       }
     },[socket])
 
@@ -169,13 +167,17 @@ function GamePage() {
     return (
       <>
         <div>
+
           {titleHandler()}
-          {windsignHandler()}
-          {player === 0? (<p> you are on the left side (blue)</p>) : (<p> you are on the right side (red)</p>)}
-          <canvas id="canvas" ref={canvasRef} width={dimension.backgroundWidth} height={dimension.backgroundHeight + 3} >
-  
-          </canvas>
-          {(gameState && player !== gameState.turn) ?
+          <div className='gameInfo'>
+             {windsignHandler()}
+             {player === 0? (<p style={{color:"blue"}}> you are on the left side (blue)</p>) :
+              (<p style={{color:"red"}}> you are on the right side (red)</p>)}
+          </div>
+
+          <canvas id="canvas" ref={canvasRef} width={dimension.backgroundWidth} height={dimension.backgroundHeight + 3} ></canvas>
+
+          {(!isStarted || (gameState && player !== gameState.turn)) ?
             <div style={{textAlign:'center'}}>Tips : The longer a missile flies, the harder it is to predict its trajectory </div>
             :
             (<Form className='controlPanel'>
@@ -198,7 +200,6 @@ function GamePage() {
                 </div>  
               </div>
 
-                
               <Button 
                 variant="primary" 
                 onClick={()=>{
@@ -211,8 +212,6 @@ function GamePage() {
               </Button>
             </Form>)        
           }
-  
-  
         </div>
       </>
     );

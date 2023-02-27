@@ -16,7 +16,6 @@ class GameMaster {
 
   onConnection(socket) {
     socket.emit("connected")
-    console.log("onconnected:", socket.id)
     this.registerHandler(socket);
   }
 
@@ -54,7 +53,6 @@ class GameMaster {
 
     socket.on('joinGame', ({gameId, playerNumber}) => {
       if(!gameId || !this.games[gameId] || this.games[gameId].numberofPlayer > 1){          //new user
-        console.log("new user")
         playerNumber = 1;
         let game = this.findGame();
         // no available game room
@@ -72,16 +70,9 @@ class GameMaster {
         socket.emit('gameJoined', {gameId : game.id, player : playerNumber});
         socket.to(game.id).emit('playerJoined');
         Object.keys(this.games).forEach((element,index) => {
-          console.log("----------------------------")
-          console.log("game", index)
-          this.games[element].players.forEach((player,i) =>{
-            console.log("player",player.socket.id,player.state)
-          })
-          console.log("----------------------------")
         });
       }
-      else {
-        console.log("old user")
+      else {                         //old users
         socket.join(gameId);
         gameIdCopy = gameId;
         let game = this.games[gameId];
@@ -96,10 +87,9 @@ class GameMaster {
     socket.on('updateGameState', ({gameId, angle, speed, player}) => {
       let game = this.games[gameId];
       // calculate projectory
-      if(player === game.state.turn){
-        projectileMovingInterval = game.handleFire(angle, speed, socket);
+      if(player === game.state.turn && game.state.projectiles.x === 0 && game.state.projectiles.y === 0){
+        game.handleFire(angle, speed, socket);
       }
-      console.log("interval", projectileMovingInterval)
     });  
     
     socket.on('angleChange', ({angle,player})=>{
@@ -121,7 +111,6 @@ class GameMaster {
         player.offLine();
         setExpire(game);
         socket.to(gameIdCopy).emit("stopGame");
-        console.log("stop here", game.projectileMovingInterval)
         clearInterval(game.projectileMovingInterval)    //stop fire
       }
     });
