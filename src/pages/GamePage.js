@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
-const port = process.env.PORT || 8000
+// const port = process.env.PORT || 8000
 // const socketPath = `http://localhost:${port}`
 
 const dimension = {
