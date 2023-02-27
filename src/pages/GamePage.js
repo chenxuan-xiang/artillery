@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 const port = process.env.PORT || 8000
-const socketPath = `http://localhost:${port}`
+// const socketPath = `http://localhost:${port}`
 
 const dimension = {
   backgroundWidth:1000,
@@ -72,7 +72,7 @@ function GamePage() {
     },[drawCannon])
 
     useEffect(() => {
-      const newSocket = io(socketPath);
+      const newSocket = io("/");
       setSocket(newSocket);
       return() => newSocket.disconnect();
     },[])
