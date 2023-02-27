@@ -81,10 +81,8 @@ function GamePage() {
     },[])
   
     useEffect(() => {
-      console.log(socket)
       if(socket){
         socket.on('connect', () => {
-          console.log("connected!!!!")
           setConnected(true);
           socket.emit('joinGame',{gameId : gameId, playerNumber : player})
         });
@@ -98,7 +96,6 @@ function GamePage() {
           setGameId(gameId);
           localStorage.setItem("gameId", gameId);
           setPlayer(player);
-          console.log("player!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",player)
           localStorage.setItem("playerNumber", player);
         })
 
@@ -125,7 +122,6 @@ function GamePage() {
         
         socket.on('switchPlayer', (state)=>{
           drawCannon();
-          console.log("turn", state.turn)
           setGameState(state);
         })
 
@@ -206,10 +202,7 @@ function GamePage() {
               <Button 
                 variant="primary" 
                 onClick={()=>{
-                  console.log(gameId)
                   if (gameId) {
-                    console.log("gameid exist")
-                    console.log(gameId)
                     socket.emit('updateGameState', {gameId : gameId, angle : angle, speed : speed, player: player})
                   }
                 }}
