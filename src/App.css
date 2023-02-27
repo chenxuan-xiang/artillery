@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+canvas {
+  background: #eee;
+  display: block;
+  margin: 0 auto;
+}
+
+.controlPanel {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+}
