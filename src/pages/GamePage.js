@@ -142,7 +142,7 @@ function GamePage() {
         })
       }
     // eslint-disable-next-line
-    },[socket, gameId, player])
+    },[socket])
 
     const titleHandler = () => {
       if(isStarted){
