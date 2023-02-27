@@ -72,7 +72,6 @@ function GamePage() {
     useEffect(() => {
       const newSocket = io(socketPath);
       setSocket(newSocket);
-      drawCannon();
       return() => newSocket.disconnect();
     },[])
   
@@ -140,7 +139,8 @@ function GamePage() {
           alert(`your projectile is ${dis}m from the oppenent, try harder!`);
         })
       }
-    },[socket])
+    // eslint-disable-next-line
+    },[socket, gameId, player])
 
     const titleHandler = () => {
       if(isStarted){
