@@ -17,8 +17,6 @@ class GameMaster {
   onConnection(socket) {
     socket.emit("connected")
     this.registerHandler(socket);
-    console.log("-------------------------------------------------------------")
-    console.log(this.games)
   }
 
   findGame() {
